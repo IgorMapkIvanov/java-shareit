@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.request.model;
 
 import lombok.*;
 import ru.practicum.shareit.user.model.User;
@@ -13,19 +13,21 @@ import java.time.LocalDateTime;
  * <p><b>ID</b> — Поле уникальный идентификатор запроса;</p>
  * <p><b>Description</b> — Поле текст запроса, содержащий описание требуемой вещи.
  * Обязвтельное поле, размер не больше 200 символов;</p>
- * <p><b>Requestor</b> — Поле ID пользователя, создавщего запрос;</p>
+ * <p><b>Requestor</b> — Пользователь, создавщий запрос. Объект класса {@link User};</p>
  * <p><b>Created</b> — Поле дата и время создания запроса.</p>
+ * <p>Уникальность определяется по ID запроса.</p>
  * <p>Класс поддерживает {@link Builder}.</p>
  *
  * @author Igor Ivanov
  */
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemRequestDto {
+public class ItemRequest {
     private Long id;
     @NotBlank
     @Max(200)
