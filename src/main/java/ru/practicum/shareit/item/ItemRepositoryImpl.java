@@ -36,6 +36,15 @@ public class ItemRepositoryImpl implements ItemRepository<Item> {
     }
 
     @Override
+    public List<Item> getItemSearchByNameAndDescription(String text) {
+        return itemMap.values().stream()
+                .filter(item -> item.getName().toLowerCase().contains(text)
+                        || item.getDescription().toLowerCase().contains(text))
+                .filter(Item::getAvailable)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Item addItemForUserWithId(Item item) {
         item.setId(++id);
         itemMap.put(item.getId(), item);

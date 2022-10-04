@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.interfaces.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +27,11 @@ public class ItemServiceImpl implements ItemService<Item> {
     @Override
     public Item getItemByIdForOwnerWithId(Long userId, Long id) {
         return itemRepository.getItemByIdForOwnerWithId(userRepository.getById(userId).orElseThrow().getId(), id);
+    }
+
+    @Override
+    public List<Item> getItemSearchByNameAndDescription(String text) {
+        return text.equals("") ? Collections.emptyList() : itemRepository.getItemSearchByNameAndDescription(text.toLowerCase());
     }
 
     @Override

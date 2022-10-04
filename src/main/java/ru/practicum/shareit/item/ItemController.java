@@ -47,7 +47,7 @@ public class ItemController {
     }
 
     /**
-     * Метод обработки запроса на информации о вещи пользователя.
+     * Метод обработки запроса на получение информации о вещи пользователя.
      *
      * @param userId ID пользователя, передается через заголовок запроса "X-Sharer-User-Id".
      * @param itemId ID вещи, передается через переменную пути.
@@ -59,6 +59,20 @@ public class ItemController {
             @PathVariable @Positive(message = "ID вещи должено быть положительным.") Long itemId) {
         log.info("CONTROLLER: Запрос на получение информации о вещи с ID = {} пользователя с ID = {}.", itemId, userId);
         return itemMapper.toDto(itemService.getItemByIdForOwnerWithId(userId, itemId));
+    }
+
+    /**
+     * Метод обработки запроса на поиск вещи.
+     *
+     * @param text ID вещи, передается через параметр запроса.
+     * @return {@link ItemDto}
+     */
+    @GetMapping("/search")
+    public List<ItemDto> getItemSearchByNameAndDescription(
+            @RequestParam(value = "text", defaultValue = "") String text) {
+        return itemService.getItemSearchByNameAndDescription(text).stream()
+                .map(itemMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     // POST запросы
