@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.WrongOwnerOfItemExceptions;
 import ru.practicum.shareit.item.interfaces.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -26,12 +27,11 @@ public class ItemRepositoryImpl implements ItemRepository<Item> {
     }
 
     @Override
-    public Item getItemByIdForOwnerWithId(Long userId, Long id) {
-        Item item = itemMap.get(id);
-        if (item.getOwner().getId().equals(userId)) {
-            return item;
+    public Item getItemById(Long id) {
+        if (itemMap.containsKey(id)) {
+            return itemMap.get(id);
         } else {
-            throw new WrongOwnerOfItemExceptions("Не корректный владелец вещи.");
+            throw new NotFoundException("Вещь с ID = " + id + " не найдена.");
         }
     }
 

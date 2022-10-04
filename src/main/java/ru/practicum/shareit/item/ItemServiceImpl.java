@@ -25,8 +25,8 @@ public class ItemServiceImpl implements ItemService<Item> {
     }
 
     @Override
-    public Item getItemByIdForOwnerWithId(Long userId, Long id) {
-        return itemRepository.getItemByIdForOwnerWithId(userRepository.getById(userId).orElseThrow().getId(), id);
+    public Item getItemById(Long id) {
+        return itemRepository.getItemById(id);
     }
 
     @Override

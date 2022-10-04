@@ -7,7 +7,7 @@ import java.util.List;
 public interface ItemRepository<T> {
     List<T> getAllItemsForOwnerWithId(Long userId);
 
-    T getItemByIdForOwnerWithId(Long userId, Long id);
+    T getItemById(Long id);
 
     T addItemForUserWithId(T t);
 
