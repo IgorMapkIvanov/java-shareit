@@ -70,7 +70,7 @@ public class ItemRepositoryImpl implements ItemRepository<Item> {
             itemMap.put(itemUpdate.getId(), itemUpdate);
             return itemUpdate;
         } else {
-            throw new WrongOwnerOfItemExceptions("Вещь с ID = " + item.getId() + " не пренадлежит пользователю с ID = " +
+            throw new WrongOwnerOfItemExceptions("Вещь с ID = " + item.getId() + " не принадлежит пользователю с ID = " +
                     item.getOwner().getId() + ".");
         }
     }
