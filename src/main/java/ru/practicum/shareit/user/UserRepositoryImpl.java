@@ -15,6 +15,8 @@ import java.util.*;
 public class UserRepositoryImpl implements UserRepository<User> {
     private Long id = 0L;
     private final Map<Long, User> userMap = new HashMap<>();
+    Set<String> uniqueEmails = new HashSet<>();
+
 
     @Override
     public List<User> getAll() {

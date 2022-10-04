@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Igor Ivanov
  */
 
-public interface UserRepository<T> extends UniqueEmails {
+public interface UserRepository<T> {
     /**
      * Метод получения списка c информацией о всех T.
      *
