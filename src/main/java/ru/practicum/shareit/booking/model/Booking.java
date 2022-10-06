@@ -1,45 +1,37 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking.model;
 
 import lombok.*;
-import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 /**
- * Класс <b>BookingDto</b> со свойствами:
+ * Класс <b>Booking</b> со свойствами:
  * <p><b>ID</b> — Поле уникальный идентификатор бронирования;</p>
  * <p><b>Start</b> — Поле дата и время начала бронирования;</p>
  * <p><b>End</b> — Поле дата и время конца бронирования;</p>
- * <p><b>Item</b> — Поле ID вещи, которую пользователь бронирует;</p>
- * <p><b>Booker</b> — Поле ID пользователя, который осуществляет бронирование;</p>
+ * <p><b>Item</b> — Вещь, объект класса {@link Item},, которую пользователь бронирует;</p>
+ * <p><b>Booker</b> — Пользователь, объект класса {@link User}, который осуществляет бронирование;</p>
  * <p><b>Status</b> — Поле статус бронирования ({@link BookingStatus}).</p>
+ * <p>Уникальность определяется по ID бронирования.</p>
  * <p>Класс поддерживает {@link Builder}. Значения по умолчанию: <b>Status = {@link BookingStatus#WAITING WAITING}</b>.</p>
  *
  * @author Igor Ivanov
  */
 @Getter
+@Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookingDto {
+public class Booking {
     private Long id;
-    @NotNull
     private LocalDateTime start;
-    @NotNull
     private LocalDateTime end;
-    @NotNull
-    @Positive
     private Item item;
-    @NotNull
-    @Positive
     private User booker;
-    @NotNull
     @Builder.Default
     private BookingStatus status = BookingStatus.WAITING;
 }
