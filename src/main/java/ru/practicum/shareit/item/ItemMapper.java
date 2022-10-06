@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.interfaces.MapperDTO;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -12,15 +12,14 @@ import ru.practicum.shareit.user.model.User;
  * @author Igor Ivanov
  */
 @Component
-public class ItemMapper implements MapperDTO<Item, ItemDto> {
+public class ItemMapper {
     /**
      * Метод преобразует объект класса {@link Item} в его DTO {@link ItemDto}.
      *
      * @param item объект класса
      * @return {@link ItemDto} - DTO объекта класса
      */
-    @Override
-    public ItemDto toDto(Item item) {
+    public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -32,13 +31,27 @@ public class ItemMapper implements MapperDTO<Item, ItemDto> {
     }
 
     /**
-     * Метод преоброзования DTO объекта класса {@link ItemDto} в объект класса {@link Item}.
+     * Метод преобразует объект класса {@link Item} в его DTO {@link ItemDtoWithBooking}.
+     *
+     * @param item объект класса
+     * @return {@link ItemDtoWithBooking} - DTO объекта класса
+     */
+    public static ItemDtoWithBooking toItemDtoWithBooking(Item item) {
+        return ItemDtoWithBooking.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .build();
+    }
+
+    /**
+     * Метод преобразования DTO объекта класса {@link ItemDto} в объект класса {@link Item}.
      *
      * @param itemDto DTO объекта класса
      * @return {@link Item} - объект класса
      */
-    @Override
-    public Item fromDto(ItemDto itemDto) {
+    public static Item fromDto(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())

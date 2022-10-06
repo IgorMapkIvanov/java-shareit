@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.interfaces.Create;
-import ru.practicum.shareit.interfaces.MapperDTO;
 import ru.practicum.shareit.interfaces.Update;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.interfaces.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.Positive;
@@ -26,8 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
-    private final UserService<User> userService;
-    private final MapperDTO<User, UserDto> userMapper;
+    private final UserService userService;
 
     // GET запросы.
 
@@ -40,7 +37,7 @@ public class UserController {
     public List<UserDto> getAll() {
         log.info("CONTROLLER: Запрос на получение списка пользователей.");
         return userService.getAll().stream()
-                .map(userMapper::toDto)
+                .map(UserMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -53,13 +50,13 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable @Positive(message = "ID пользователя должен быть положительным.") Long id) {
         log.info("CONTROLLER: Запрос на получение информации о пользователе с ID = {}.", id);
-        return userMapper.toDto(userService.getById(id));
+        return UserMapper.toDto(userService.getById(id));
     }
 
     // POST запросы
 
     /**
-     * Метод обработки запроса на добаление нового пользователя.
+     * Метод обработки запроса на добавление нового пользователя.
      *
      * @param userDto {@link UserDto} без ID.
      * @return {@link UserDto} c ID.
@@ -67,9 +64,9 @@ public class UserController {
     @PostMapping
     public UserDto add(@Validated(value = Create.class) @RequestBody UserDto userDto) {
         log.info("CONTROLLER: Запрос на добавление нового пользователя: {}.", userDto);
-        User user = userMapper.fromDto(userDto);
+        User user = UserMapper.fromDto(userDto);
         userService.add(user);
-        return userMapper.toDto(user);
+        return UserMapper.toDto(user);
     }
 
     // PATCH запросы
@@ -77,7 +74,7 @@ public class UserController {
     /**
      * Метод обработки запроса на обновление данных пользователя.
      *
-     * @param id      ID пользоветеля
+     * @param id      ID пользователя
      * @param userDto {@link UserDto} с новыми значениями.
      * @return {@link UserDto} обновленная информация о пользователе.
      */
@@ -85,8 +82,8 @@ public class UserController {
     public UserDto update(@PathVariable @Positive Long id, @Validated(value = Update.class) @RequestBody UserDto userDto) {
         log.info("CONTROLLER: Запрос на обновление пользователя с ID = {}.", id);
         userDto.setId(id);
-        User user = userMapper.fromDto(userDto);
-        return userMapper.toDto(userService.update(user));
+        User user = UserMapper.fromDto(userDto);
+        return UserMapper.toDto(userService.update(user));
     }
 
     // DELETE запросы
@@ -94,7 +91,7 @@ public class UserController {
     /**
      * Метод обработки запроса на удаление пользователя.
      *
-     * @param id ID пользоветеля.
+     * @param id ID пользователя.
      */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {

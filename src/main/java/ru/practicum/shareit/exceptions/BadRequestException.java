@@ -1,7 +1,8 @@
 package ru.practicum.shareit.exceptions;
 
-public class EmailIsPresentException extends RuntimeException {
-    public EmailIsPresentException(String message) {
+public class BadRequestException extends RuntimeException {
+
+    public BadRequestException(String message) {
         super(message);
     }
 
