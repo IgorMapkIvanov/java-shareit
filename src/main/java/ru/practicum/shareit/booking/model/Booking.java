@@ -4,6 +4,10 @@ import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -19,19 +23,31 @@ import java.time.LocalDateTime;
  *
  * @author Igor Ivanov
  */
+@Entity
+@Table(name = "bookings", schema = "public")
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode(of = "id")
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "bigint")
     private Long id;
+    @Column(name = "booking_from")
+    @NotNull
+    @FutureOrPresent
     private LocalDateTime start;
+    @Column(name = "booking_to")
+    @NotNull
+    @Future
     private LocalDateTime end;
+    @ManyToOne(targetEntity = Item.class, cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE})
     private Item item;
+    @ManyToOne(targetEntity = User.class, cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE})
     private User booker;
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private BookingStatus status = BookingStatus.WAITING;
 }

@@ -6,15 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.interfaces.Create;
-import ru.practicum.shareit.interfaces.MapperDTO;
 import ru.practicum.shareit.interfaces.Update;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.interfaces.ItemService;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Класс контроллер для пути "/items".
@@ -27,8 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(path = "/items")
 public class ItemController {
-    private final ItemService<Item> itemService;
-    private final MapperDTO<Item, ItemDto> itemMapper;
+    private final ItemService itemService;
 
     // GET запросы.
 
@@ -39,11 +36,9 @@ public class ItemController {
      * @return {@link List} содержащий {@link ItemDto}
      */
     @GetMapping
-    public List<ItemDto> getAllItemsForOwnerWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId) {
+    public List<ItemDtoWithBooking> getAllItemsForOwnerWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId) {
         log.info("CONTROLLER: Запрос на получение списка с информацией всех вещей пользователя с ID = {}.", userId);
-        return itemService.getAllItemsForOwnerWithId(userId).stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
+        return itemService.getAllItemsForOwnerWithId(userId);
     }
 
     /**
@@ -53,23 +48,23 @@ public class ItemController {
      * @return {@link List} содержащий {@link ItemDto}
      */
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable @Positive(message = "ID вещи должен быть положительным.") Long itemId) {
+    public ItemDtoWithBooking getItemById(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
+                                          @PathVariable @Positive(message = "ID вещи должен быть положительным.") Long itemId) {
         log.info("CONTROLLER: Запрос на получение информации о вещи с ID = {}.", itemId);
-        return itemMapper.toDto(itemService.getItemById(itemId));
+        return itemService.getItemById(userId, itemId);
     }
 
     /**
      * Метод обработки запроса на поиск вещи.
      *
-     * @param text ID вещи, передается через параметр запроса.
+     * @param text текс запроса поиска.
      * @return {@link ItemDto}
      */
     @GetMapping("/search")
-    public List<ItemDto> getItemSearchByNameAndDescription(
+    public List<ItemDto> searchItemsByNameOrDescriptionContainingTextIgnoreCaseAndAvailable(
             @RequestParam(value = "text", defaultValue = "") String text) {
-        return itemService.getItemSearchByNameAndDescription(text).stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
+        log.info("CONTROLLER: Запрос на поиск вещи в имени или описании содержащей текст: {}.", text);
+        return itemService.searchItemByText(text);
     }
 
     // POST запросы
@@ -85,31 +80,41 @@ public class ItemController {
     public ItemDto addItemForUserWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
                                         @Validated(value = Create.class) @RequestBody ItemDto itemDto) {
         log.info("CONTROLLER: Запрос на добавление новой вещи: {} для пользователя с ID = {}.", itemDto, userId);
-        Item newItem = itemMapper.fromDto(itemDto);
-        newItem.getOwner().setId(userId);
-        Item addedItem = itemService.addItemForUserWithId(newItem);
-        return itemMapper.toDto(addedItem);
+        return itemService.addItemForUserWithId(itemDto, userId);
     }
 
+    /**
+     * Метод обработки запроса на добавление комментария для вещи.
+     *
+     * @param commentDto объект класса {@link CommentDto}, передается через тело запроса.
+     * @param userId     ID владельца вещи, передается через заголовок запроса "X-Sharer-User-Id".
+     * @param itemId     ID вещи, передается через переменную пути.
+     * @return объект класса {@link CommentDto}.
+     */
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@Positive @RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @Validated(value = Create.class) @RequestBody CommentDto commentDto,
+                                 @Positive @PathVariable Long itemId) {
+        log.info("Принят запрос на добавление комментария: {} для вещи с ID = {}.", commentDto, itemId);
+        return itemService.addComment(userId, commentDto, itemId);
+    }
     // PATCH запросы
 
     /**
      * Метод обработки запроса на обновление данных вещи.
      *
      * @param userId  ID владельца вещи, передается через заголовок запроса "X-Sharer-User-Id".
-     * @param id      ID вещи, передается через переменную пути.
+     * @param itemId  ID вещи, передается через переменную пути.
      * @param itemDto {@link ItemDto} с новыми значениями.
      * @return {@link ItemDto} обновленная информация о пользователе.
      */
-    @PatchMapping("/{id}")
+    @PatchMapping("/{itemId}")
     public ItemDto updateItemForUserWithId(
             @RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
-            @PathVariable @Positive Long id, @Validated(value = Update.class) @RequestBody ItemDto itemDto) {
-        log.info("CONTROLLER: Запрос на обновление вещи с ID = {} пользователя с ID = {}. {}", id, userId, itemDto);
-        itemDto.setId(id);
-        Item updateItem = itemMapper.fromDto(itemDto);
-        updateItem.getOwner().setId(userId);
-        return itemMapper.toDto(itemService.updateItemForUserWithId(updateItem));
+            @PathVariable @Positive Long itemId, @Validated(value = Update.class) @RequestBody ItemDto itemDto) {
+        log.info("CONTROLLER: Запрос на обновление вещи с ID = {} пользователя с ID = {}. {}", itemId, userId, itemDto);
+        itemDto.setId(itemId);
+        return itemService.updateItemForUserWithId(itemDto, userId);
     }
 
     // DELETE запросы

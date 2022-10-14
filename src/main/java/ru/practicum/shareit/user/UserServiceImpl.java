@@ -3,9 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.EmailIsPresentException;
-import ru.practicum.shareit.user.interfaces.UserRepository;
-import ru.practicum.shareit.user.interfaces.UserService;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -13,56 +11,61 @@ import java.util.Optional;
 
 /**
  * Класс сервис, осуществляет бизнес логику работы с классом {@link User}.
- * <p>Взаимодействует с хранилищем {@link UserRepository}
+ * <p>Взаимодействует с хранилищем {@link ru.practicum.shareit.user.UserRepository}
  *
  * @author Igor Ivanov
  */
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService<User> {
-    private final UserRepository<User> userRepository;
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
     @Override
     public List<User> getAll() {
         log.info("SERVICE: Запрос на получение списка пользователей.");
-        return userRepository.getAll();
+        return userRepository.findAll();
     }
 
     @Override
     public User getById(Long id) {
         log.info("SERVICE: Запрос на получение информации о пользователе с ID = {}.", id);
-        Optional<User> user = userRepository.getById(id);
+        Optional<User> user = userRepository.findById(id);
         return user.orElseThrow();
     }
 
+    @Transactional
     @Override
     public User add(User user) {
         log.info("SERVICE: Запрос на добавление нового пользователя: {}.", user);
-        validation(user);
-        return userRepository.add(user);
+        return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public User update(User user) {
         log.info("SERVICE: Запрос на обновление пользователя с ID = {}.", user.getId());
-        validation(user);
-        userRepository.getById(user.getId()).orElseThrow();
-        return userRepository.update(user);
+        User userBd = userRepository.findById(user.getId()).orElseThrow();
+        copyFields(user, userBd);
+        return userRepository.save(userBd);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         log.info("SERVICE: Запрос на удаление пользователя с ID = {}.", id);
-        userRepository.getById(id).orElseThrow();
-        userRepository.delete(id);
+        userRepository.findById(id).orElseThrow();
+        userRepository.deleteById(id);
     }
 
-    @Override
-    public void validation(User user) {
-        if (userRepository.getUniqueEmails().contains(user.getEmail())) {
-            throw new EmailIsPresentException("Пользователь с таким e-mail: " + user.getEmail() + " существует.");
+    private void copyFields(User user, User userDb) {
+        if (user.getName() != null && !user.getName().equals(userDb.getName())) {
+            userDb.setName(user.getName());
+        }
+        if (user.getEmail() != null && !user.getEmail().equals(userDb.getEmail())) {
+            userDb.setEmail(user.getEmail());
         }
     }
 }

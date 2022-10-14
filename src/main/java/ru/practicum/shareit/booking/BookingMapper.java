@@ -1,34 +1,40 @@
 package ru.practicum.shareit.booking;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.interfaces.MapperDTO;
 
-/**
- * Класс  {@link MapperDTO} для класса {@link Booking}.
- */
-public class BookingMapper implements MapperDTO<Booking, BookingDto> {
-    @Override
-    public BookingDto toDto(Booking booking) {
+public class BookingMapper {
+    public static BookingDto toDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
+                .itemId(booking.getItem().getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .item(booking.getItem())
-                .booker(booking.getBooker())
                 .status(booking.getStatus())
                 .build();
     }
 
-    @Override
-    public Booking fromDto(BookingDto bookingDto) {
+
+    public static Booking fromDto(BookingDto bookingDto) {
         return Booking.builder()
                 .id(bookingDto.getId())
                 .start(bookingDto.getStart())
                 .end(bookingDto.getEnd())
-                .item(bookingDto.getItem())
-                .booker(bookingDto.getBooker())
                 .status(bookingDto.getStatus())
+                .build();
+    }
+
+    public static ResponseBookingDto toResponseBookingDto(Booking booking) {
+        return ResponseBookingDto.builder()
+                .id(booking.getId())
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .status(booking.getStatus())
+                .booker(new ResponseBookingDto
+                        .BookingUserDto(booking.getBooker().getId(), booking.getBooker().getName()))
+                .item(new ResponseBookingDto
+                        .BookingItemDto(booking.getItem().getId(), booking.getItem().getName()))
                 .build();
     }
 }

@@ -15,14 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(final ValidationException e) {
-        log.info("400 {}", e.getMessage(), e);
-        return Map.of("error", "validation error", "errorMessage", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleEmailIsPresentException(final EmailIsPresentException e) {
+    public Map<String, String> handleBadRequestException(final BadRequestException e) {
         log.info("400 {}", e.getMessage(), e);
         return Map.of("error", "validation error", "errorMessage", e.getMessage());
     }
@@ -42,10 +35,10 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleWrongOwnerOfItemExceptions(final WrongOwnerOfItemExceptions e) {
-        log.info("404 {}", e.getMessage(), e);
-        return Map.of("error", "Not Found", "errorMessage", e.getMessage());
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleValidationException(
+            ValidationException exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler

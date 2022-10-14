@@ -1,0 +1,20 @@
+#
+#     SSSSSSSSSSSSSSS hhhhhhh                                                                    IIIIIIIIII       tttt
+#   SS:::::::::::::::Sh:::::h                                                                    I::::::::I    ttt:::t
+#  S:::::SSSSSS::::::Sh:::::h                                                                    I::::::::I    t:::::t
+#  S:::::S     SSSSSSSh:::::h                                                                    II::::::II    t:::::t
+#  S:::::S             h::::h hhhhh         aaaaaaaaaaaaa  rrrrr   rrrrrrrrr       eeeeeeeeeeee    I::::Ittttttt:::::ttttttt
+#  S:::::S             h::::hh:::::hhh      a::::::::::::a r::::rrr:::::::::r    ee::::::::::::ee  I::::It:::::::::::::::::t
+#   S::::SSSS          h::::::::::::::hh    aaaaaaaaa:::::ar:::::::::::::::::r  e::::::eeeee:::::eeI::::It:::::::::::::::::t
+#    SS::::::SSSSS     h:::::::hhh::::::h            a::::arr::::::rrrrr::::::re::::::e     e:::::eI::::Itttttt:::::::tttttt
+#      SSS::::::::SS   h::::::h   h::::::h    aaaaaaa:::::a r:::::r     r:::::re:::::::eeeee::::::eI::::I      t:::::t
+#         SSSSSS::::S  h:::::h     h:::::h  aa::::::::::::a r:::::r     rrrrrrre:::::::::::::::::e I::::I      t:::::t
+#              S:::::S h:::::h     h:::::h a::::aaaa::::::a r:::::r            e::::::eeeeeeeeeee  I::::I      t:::::t
+#              S:::::S h:::::h     h:::::ha::::a    a:::::a r:::::r            e:::::::e           I::::I      t:::::t    tttttt
+#  SSSSSSS     S:::::S h:::::h     h:::::ha::::a    a:::::a r:::::r            e::::::::e        II::::::II    t::::::tttt:::::t
+#  S::::::SSSSSS:::::S h:::::h     h:::::ha:::::aaaa::::::a r:::::r             e::::::::eeeeeeeeI::::::::I    tt::::::::::::::t
+#  S:::::::::::::::SS  h:::::h     h:::::h a::::::::::aa:::ar:::::r              ee:::::::::::::eI::::::::I      tt:::::::::::tt
+#   SSSSSSSSSSSSSSS    hhhhhhh     hhhhhhh  aaaaaaaaaa  aaaarrrrrrr                eeeeeeeeeeeeeeIIIIIIIIII        ttttttttttt
+#
+#
+# by Igor Ivanov
