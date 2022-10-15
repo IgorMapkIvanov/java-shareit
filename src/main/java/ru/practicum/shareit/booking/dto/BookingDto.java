@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking.dto;
 import lombok.*;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.interfaces.Create;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
@@ -40,4 +42,6 @@ public class BookingDto {
     @Positive(groups = Create.class)
     private Long itemId;
     private BookingStatus status;
+    private User booker;
+    private Item item;
 }

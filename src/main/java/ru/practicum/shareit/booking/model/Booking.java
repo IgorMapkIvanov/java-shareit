@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.*;
+import ru.practicum.shareit.interfaces.Create;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -37,11 +38,11 @@ public class Booking {
     private Long id;
     @Column(name = "booking_from")
     @NotNull
-    @FutureOrPresent
+    @FutureOrPresent(groups = Create.class)
     private LocalDateTime start;
     @Column(name = "booking_to")
     @NotNull
-    @Future
+    @Future(groups = Create.class)
     private LocalDateTime end;
     @ManyToOne(targetEntity = Item.class, cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE})
     private Item item;

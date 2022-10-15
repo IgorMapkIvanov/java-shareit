@@ -12,6 +12,8 @@ public class BookingMapper {
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .status(booking.getStatus())
+                .booker(booking.getBooker())
+                .item(booking.getItem())
                 .build();
     }
 

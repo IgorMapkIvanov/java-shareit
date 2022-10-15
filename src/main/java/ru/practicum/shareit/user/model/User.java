@@ -16,7 +16,7 @@ import javax.persistence.*;
  * @author Igor Ivanov
  */
 @Entity
-@Table(name = "USERS", schema = "public")
+@Table(name = "users", schema = "public")
 @Getter
 @Setter
 @ToString
