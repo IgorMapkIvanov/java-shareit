@@ -16,8 +16,6 @@ public interface ItemService {
 
     ItemDto updateItemForUserWithId(ItemDto itemDto, Long userId);
 
-    void deleteItemForUserWithId(Long userId, Long itemId);
-
     List<ItemDto> searchItemByText(String text, PageRequest pageRequest);
 
     CommentDto addComment(Long userId, CommentDto commentDto, Long itemId);

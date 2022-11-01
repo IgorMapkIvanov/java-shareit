@@ -255,7 +255,32 @@ public class ItemServiceImplIntegrationTest {
         assertEquals(item.getOwner(), user);
         assertEquals(item.getDescription(), updateItemDto.getDescription());
         assertEquals(item.getAvailable(), updateItemDto.getAvailable());
+    }
 
+    @Test
+    void shouldUpdateItemOnlyAvailableTest() {
+        ItemDto itemDto = ItemDto.builder()
+                .name("name")
+                .description("description")
+                .available(true)
+                .build();
+        itemDto = service.addItemForUserWithId(itemDto, user.getId());
+
+        ItemDto updateItemDto = ItemDto.builder()
+                .id(itemDto.getId())
+                .description("description")
+                .available(false)
+                .build();
+        updateItemDto = service.updateItemForUserWithId(updateItemDto, user.getId());
+
+        TypedQuery<Item> query = em.createQuery("SELECT i from Item i where i.id = :id", Item.class);
+        Item item = query.setParameter("id", itemDto.getId()).getSingleResult();
+
+        assertEquals(item.getId(), updateItemDto.getId());
+        assertEquals(item.getName(), itemDto.getName());
+        assertEquals(item.getOwner(), user);
+        assertEquals(item.getDescription(), updateItemDto.getDescription());
+        assertEquals(item.getAvailable(), updateItemDto.getAvailable());
     }
 
     @Test

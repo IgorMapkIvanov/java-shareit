@@ -149,22 +149,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * Метод обработки запроса на удаление вещи.
-     *
-     * @param userId ID пользователя, передается через заголовок запроса "X-Sharer-User-Id".
-     * @param itemId ID вещи, передается через переменную пути.
-     */
-    @Override
-    @Transactional
-    public void deleteItemForUserWithId(Long userId, Long itemId) {
-        log.info("SERVICE: Обработка запроса на удаление вещи с ID = {}.", itemId);
-        checkUserIdInDbAndReturnUser(userId);
-        checkItemInDbAndReturnItem(itemId);
-        itemRepository.deleteItemByOwnerIdAndId(userId, itemId);
-        log.info("SERVICE: Вещи с ID = {} - удалена.", itemId);
-    }
-
-    /**
      * Метод обработки запроса на добавление комментария для вещи.
      *
      * @param commentDto объект класса {@link CommentDto}, передается через тело запроса.

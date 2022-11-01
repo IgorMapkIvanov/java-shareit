@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import lombok.NonNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -69,5 +68,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                                                     LocalDateTime end,
                                                                                     PageRequest pageRequest);
 
-    void deleteById(@NonNull Long bookingId);
 }

@@ -73,12 +73,4 @@ public class BookingController {
                 userId);
         return bookingService.approveBooking(userId, bookingId, approved);
     }
-
-    //DELETE запросы
-    @DeleteMapping("/{bookingId}")
-    public void delete(@Positive @NotNull @RequestHeader("X-Sharer-User-Id") Long userId,
-                       @Positive @PathVariable Long bookingId) {
-        log.info("CONTROLLER: Запрос на удаление бронирования с ID = {} пользователя с ID = {}.", bookingId, userId);
-        bookingService.delete(userId, bookingId);
-    }
 }

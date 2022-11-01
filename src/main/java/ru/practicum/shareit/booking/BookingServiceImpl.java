@@ -133,23 +133,6 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toResponseBookingDto(bookingRepository.save(booking));
     }
 
-    @Override
-    public void delete(Long userId, Long bookingId) {
-        log.info("SERVICE: Обработка запроса на удаление бронирования с ID = {} пользователя с ID = {}.",
-                bookingId,
-                userId);
-        Booking booking = bookingRepository.findBookingById(bookingId).orElseThrow(() -> {
-            log.error("SERVICE: Бронирование с ID = {} - не найден.", bookingId);
-            throw new NotFoundException("Бронирование с ID = " + bookingId + " не найдено.");
-        });
-        if (booking.getBooker().getId().equals(userId)) {
-            bookingRepository.deleteById(bookingId);
-        } else {
-            log.error("SERVICE: Нельзя удалить чужое бронирование.");
-            throw new NotFoundException("Нельзя удалить чужое бронирование.");
-        }
-    }
-
     private void validationUserIdAndBookingState(Long userId, String bookingState) {
         userRepository.findById(userId)
                 .orElseThrow(() -> {

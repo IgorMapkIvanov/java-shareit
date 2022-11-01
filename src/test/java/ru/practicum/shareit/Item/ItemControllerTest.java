@@ -189,15 +189,6 @@ class ItemControllerTest {
                 .updateItemForUserWithId(any(ItemDto.class), anyLong());
     }
 
-    @Test
-    void shouldDeleteItemTest() throws Exception {
-        mockMvc.perform(mockAction(delete("/items/1"), user.getId(), itemDto))
-                .andExpect(status().isOk());
-
-        verify(itemService, times(1))
-                .deleteItemForUserWithId(anyLong(), anyLong());
-    }
-
     private MockHttpServletRequestBuilder mockAction(MockHttpServletRequestBuilder mockMvc, Long userId, ItemDto itemDto)
             throws JsonProcessingException {
         return mockMvc

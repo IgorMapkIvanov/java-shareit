@@ -128,19 +128,4 @@ public class ItemController {
         itemDto.setId(itemId);
         return itemService.updateItemForUserWithId(itemDto, userId);
     }
-
-    // DELETE запросы
-
-    /**
-     * Метод обработки запроса на удаление вещи.
-     *
-     * @param userId ID пользователя, передается через заголовок запроса "X-Sharer-User-Id".
-     * @param id     ID вещи, передается через переменную пути.
-     */
-    @DeleteMapping("/{id}")
-    public void deleteItemForUserWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
-                                        @PathVariable @Positive Long id) {
-        log.info("CONTROLLER: Запрос на удаление вещи с ID = {}.", id);
-        itemService.deleteItemForUserWithId(userId, id);
-    }
 }
