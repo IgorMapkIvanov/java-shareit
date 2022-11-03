@@ -83,10 +83,6 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toList());
         requestDtos.forEach(this::setItems);
         return requestDtos;
-//        return requestRepository.getRequestsByRequesterId(userId, pageRequest).stream()
-//                .map(RequestMapper::toDto)
-//                .peek(this::setItems)
-//                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -126,8 +122,5 @@ public class RequestServiceImpl implements RequestService {
                     .map(ItemMapper::toItemDto)
                     .collect(Collectors.toUnmodifiableList()));
         }
-//        requestDto.setItems(itemRepository.getItemsByRequest(requestDto.getId()).stream()
-//                .map(ItemMapper::toItemDto)
-//                .collect(Collectors.toUnmodifiableList()));
     }
 }
