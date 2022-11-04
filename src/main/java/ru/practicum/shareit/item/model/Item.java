@@ -39,9 +39,8 @@ public class Item {
     private Boolean available = true;
     @ManyToOne(targetEntity = User.class, cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE})
     private User owner;
-    @Column(name = "request")
-    @Builder.Default
-    private Long request = 0L;
+    @Column(name = "request_id")
+    private Long requestId;
 
     @Override
     public boolean equals(Object o) {

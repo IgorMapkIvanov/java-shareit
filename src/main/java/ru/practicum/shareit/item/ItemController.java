@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.interfaces.Create;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/items")
+@Validated
 public class ItemController {
     private final ItemService itemService;
 
@@ -36,9 +39,14 @@ public class ItemController {
      * @return {@link List} содержащий {@link ItemDto}
      */
     @GetMapping
-    public List<ItemDtoWithBooking> getAllItemsForOwnerWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId) {
+    public List<ItemDtoWithBooking> getAllItemsForOwnerWithId(
+            @RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
+            @RequestParam(value = "from", required = false, defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(value = "size", required = false, defaultValue = "10") @Positive Integer size) {
+        int page = from / size;
+        PageRequest pageRequest = PageRequest.of(page, size);
         log.info("CONTROLLER: Запрос на получение списка с информацией всех вещей пользователя с ID = {}.", userId);
-        return itemService.getAllItemsForOwnerWithId(userId);
+        return itemService.getAllItemsForOwnerWithId(userId, pageRequest);
     }
 
     /**
@@ -62,9 +70,13 @@ public class ItemController {
      */
     @GetMapping("/search")
     public List<ItemDto> searchItemsByNameOrDescriptionContainingTextIgnoreCaseAndAvailable(
-            @RequestParam(value = "text", defaultValue = "") String text) {
+            @RequestParam(value = "text", defaultValue = "") String text,
+            @RequestParam(value = "from", required = false, defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(value = "size", required = false, defaultValue = "10") @Positive Integer size) {
+        int page = from / size;
+        PageRequest pageRequest = PageRequest.of(page, size);
         log.info("CONTROLLER: Запрос на поиск вещи в имени или описании содержащей текст: {}.", text);
-        return itemService.searchItemByText(text);
+        return itemService.searchItemByText(text, pageRequest);
     }
 
     // POST запросы
@@ -115,20 +127,5 @@ public class ItemController {
         log.info("CONTROLLER: Запрос на обновление вещи с ID = {} пользователя с ID = {}. {}", itemId, userId, itemDto);
         itemDto.setId(itemId);
         return itemService.updateItemForUserWithId(itemDto, userId);
-    }
-
-    // DELETE запросы
-
-    /**
-     * Метод обработки запроса на удаление вещи.
-     *
-     * @param userId ID пользователя, передается через заголовок запроса "X-Sharer-User-Id".
-     * @param id     ID вещи, передается через переменную пути.
-     */
-    @DeleteMapping("/{id}")
-    public void deleteItemForUserWithId(@RequestHeader("X-Sharer-User-Id") @NonNull @Positive Long userId,
-                                        @PathVariable @Positive Long id) {
-        log.info("CONTROLLER: Запрос на удаление вещи с ID = {}.", id);
-        itemService.deleteItemForUserWithId(userId, id);
     }
 }

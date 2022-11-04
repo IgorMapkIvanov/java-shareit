@@ -43,6 +43,5 @@ public class ItemDto {
     @NotNull(groups = Create.class)
     private Boolean available;
     private User owner;
-    @Builder.Default
-    private Long request = 0L;
+    private Long requestId;
 }

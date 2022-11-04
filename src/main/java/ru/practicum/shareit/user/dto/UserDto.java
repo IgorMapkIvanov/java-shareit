@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
  * Класс UserDto со свойствами:
  * <p><b>ID</b> — уникальный идентификатор пользователя;
  * <p><b>Name</b> — Поле имя или логин пользователя;
- * <p><b>Email</b> — Поле электроной почты пользователя.
+ * <p><b>Email</b> — Поле электронной почты пользователя.
  * <p>Класс поддерживает {@link Builder}.</p>
  *
  * @author Igor Ivanov
@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

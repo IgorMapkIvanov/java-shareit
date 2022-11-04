@@ -42,12 +42,12 @@ public class ItemServiceImpl implements ItemService {
      * @return {@link List} содержащий {@link ItemDtoWithBooking}
      */
     @Override
-    public List<ItemDtoWithBooking> getAllItemsForOwnerWithId(Long userId) {
+    public List<ItemDtoWithBooking> getAllItemsForOwnerWithId(Long userId, PageRequest pageRequest) {
         log.info("SERVICE: Обработка запроса на получение списка с информацией всех вещей пользователя с ID = {}.", userId);
 
         checkUserIdInDbAndReturnUser(userId);
 
-        List<ItemDtoWithBooking> itemDtoWithBookingList = itemRepository.getItemsByOwnerId(userId).stream()
+        List<ItemDtoWithBooking> itemDtoWithBookingList = itemRepository.getItemsByOwnerId(userId, pageRequest).stream()
                 .map(ItemMapper::toItemDtoWithBooking)
                 .peek(item -> {
                     setLastBooking(userId, item);
@@ -86,14 +86,17 @@ public class ItemServiceImpl implements ItemService {
      * @return {@link List} {@link ItemDto}
      */
     @Override
-    public List<ItemDto> searchItemByText(String text) {
+    public List<ItemDto> searchItemByText(String text, PageRequest pageRequest) {
         log.info("SERVICE: Обработка запроса на поиск вещи в имени или описании содержащей текст: {}.", text);
         if (text.equals("")) {
             log.info("SERVICE: Отправка пустого списка. Строка поиска пустая.");
             return Collections.emptyList();
         } else {
             log.info("SERVICE: Отправка информации о вещи в имени или описании содержащей текст: {}.", text);
-            return itemRepository.searchItemsByNameOrDescriptionContainingTextIgnoreCaseAndAvailable(text, true)
+            return itemRepository.searchItemsByNameOrDescriptionContainingTextIgnoreCaseAndAvailable(
+                            text,
+                            true,
+                            pageRequest)
                     .stream()
                     .map(ItemMapper::toItemDto)
                     .collect(Collectors.toUnmodifiableList());
@@ -146,22 +149,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * Метод обработки запроса на удаление вещи.
-     *
-     * @param userId ID пользователя, передается через заголовок запроса "X-Sharer-User-Id".
-     * @param itemId ID вещи, передается через переменную пути.
-     */
-    @Override
-    @Transactional
-    public void deleteItemForUserWithId(Long userId, Long itemId) {
-        log.info("SERVICE: Обработка запроса на удаление вещи с ID = {}.", itemId);
-        checkUserIdInDbAndReturnUser(userId);
-        checkItemInDbAndReturnItem(itemId);
-        itemRepository.deleteItemByOwnerIdAndId(userId, itemId);
-        log.info("SERVICE: Вещи с ID = {} - удалена.", itemId);
-    }
-
-    /**
      * Метод обработки запроса на добавление комментария для вещи.
      *
      * @param commentDto объект класса {@link CommentDto}, передается через тело запроса.
@@ -180,7 +167,7 @@ public class ItemServiceImpl implements ItemService {
                 bookingRepository.findBookingsByBooker_IdAndItemIdAndEndBeforeAndStatus(
                         authorId,
                         itemId,
-                        LocalDateTime.now(),
+                        commentDto.getCreated() == null ? LocalDateTime.now() : commentDto.getCreated(),
                         BookingStatus.APPROVED);
 
         if (authorBookings.size() > 0) {

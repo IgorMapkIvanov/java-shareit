@@ -3,37 +3,38 @@ package ru.practicum.shareit.request.model;
 import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Класс <b>ItemRequest</b> со свойствами:
+ * Класс <b>Request</b> со свойствами:
  * <p><b>ID</b> — Поле уникальный идентификатор запроса;</p>
  * <p><b>Description</b> — Поле текст запроса, содержащий описание требуемой вещи.
- * Обязвтельное поле, размер не больше 200 символов;</p>
- * <p><b>Requestor</b> — Пользователь, создавщий запрос. Объект класса {@link User};</p>
+ * Обязательное поле, размер не больше 200 символов;</p>
+ * <p><b>Requestor</b> — Пользователь, создающий запрос. Объект класса {@link User};</p>
  * <p><b>Created</b> — Поле дата и время создания запроса.</p>
  * <p>Уникальность определяется по ID запроса.</p>
  * <p>Класс поддерживает {@link Builder}.</p>
  *
  * @author Igor Ivanov
  */
+
+@Entity
+@Table(name = "requests", schema = "public")
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemRequest {
+public class Request {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @Max(200)
+    @Column(name = "description")
     private String description;
-    @NotNull
-    private User requestor;
-    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User requester;
+    @Column(name = "created")
     private LocalDateTime created;
 }
