@@ -14,6 +14,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -581,9 +582,9 @@ class BookingServiceImplIntegrationTest {
         em.persist(booking2);
         String badState = "BAD_STATE";
 
-        assertThrows(IllegalArgumentException.class, () ->
+        ValidationException exception = assertThrows(ValidationException.class, () ->
                 service.getUserBookings(user2.getId(), badState, null));
-        assertEquals("Unknown state: BAD_STATE", "Unknown state: " + badState);
+        assertEquals(exception.getMessage(), "Unknown state: " + badState);
     }
 
     @Test
@@ -844,7 +845,7 @@ class BookingServiceImplIntegrationTest {
                 .getResultList();
 
         assertEquals(2, bookings.size());
-        assertEquals(bookings.get(0).getId(), bookingBase.get(1).getId()); //т.к. по условию в bookings передаются от самого нового бронирования
+        assertEquals(bookings.get(0).getId(), bookingBase.get(1).getId());
         assertEquals(bookings.get(0).getStart(), bookingBase.get(1).getStart());
         assertEquals(bookings.get(0).getEnd(), bookingBase.get(1).getEnd());
         assertEquals(bookings.get(0).getStatus(), bookingBase.get(1).getStatus());
