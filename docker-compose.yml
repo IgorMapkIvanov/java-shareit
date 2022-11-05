@@ -20,9 +20,9 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ShareIt
+      - SPRING_DATASOURCE_USERNAME=ShareIt
+      - SPRING_DATASOURCE_PASSWORD=ShareIt
 
   db:
     image: postgres:14.4-alpine
