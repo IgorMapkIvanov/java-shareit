@@ -36,13 +36,6 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleValidationException(
-            ValidationException exception) {
-        return new ErrorResponse(exception.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleException(final Exception e) {
         return Map.of("error", "Unexpected error: " + e.getCause().toString(), "errorMessage", e.getMessage());
     }

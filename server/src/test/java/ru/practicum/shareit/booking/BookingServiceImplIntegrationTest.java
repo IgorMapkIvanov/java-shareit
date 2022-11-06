@@ -14,7 +14,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -582,9 +581,9 @@ class BookingServiceImplIntegrationTest {
         em.persist(booking2);
         String badState = "BAD_STATE";
 
-        ValidationException exception = assertThrows(ValidationException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 service.getUserBookings(user2.getId(), badState, null));
-        assertEquals(exception.getMessage(), "Unknown state: " + badState);
+        assertEquals(exception.getMessage(), "No enum constant ru.practicum.shareit.booking.model.BookingState.BAD_STATE");
     }
 
     @Test

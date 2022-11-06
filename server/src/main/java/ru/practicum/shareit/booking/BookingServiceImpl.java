@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
@@ -33,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<ResponseBookingDto> getUserBookings(Long userId, String bookingState, PageRequest pageRequest) {
         log.info("SERVICE: Обработка запроса на получение списка бронирований пользователя с ID = {}.", userId);
-        validationUserIdAndBookingState(userId, bookingState);
+        validationUserId(userId);
         List<Booking> bookings = getUserBookingList(userId, bookingState, pageRequest);
 
         log.info("SERVICE: Отправка списка бронирований пользователя с ID = {}.", userId);
@@ -66,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<ResponseBookingDto> getOwnerBookings(Long userId, String bookingState, PageRequest pageRequest) {
         log.info("CONTROLLER: Обработка запроса на получение информации о бронированиях пользователя с ID = {}.", userId);
-        validationUserIdAndBookingState(userId, bookingState);
+        validationUserId(userId);
         List<Booking> bookings = getOwnerBookingsList(userId, bookingState, pageRequest);
 
         log.info("CONTROLLER: Отправка информации о бронированиях пользователя с ID = {}.", userId);
@@ -133,13 +132,12 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toResponseBookingDto(bookingRepository.save(booking));
     }
 
-    private void validationUserIdAndBookingState(Long userId, String state) {
+    private void validationUserId(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("SERVICE: Пользователь с ID = {} - не найден.", userId);
                     throw new NotFoundException("Пользователь с ID = " + userId + "- не найден.");
                 });
-        BookingState.from(state).orElseThrow(() -> new ValidationException("Unknown state: " + state));
     }
 
     private List<Booking> getUserBookingList(Long userId, String bookingState, PageRequest pageRequest) {
