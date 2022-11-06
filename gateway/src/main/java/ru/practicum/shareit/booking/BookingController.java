@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.interfaces.Create;
 
 import javax.validation.constraints.NotNull;
@@ -27,6 +29,7 @@ public class BookingController {
             @RequestParam(value = "state", defaultValue = "ALL", required = false) String state,
             @RequestParam(value = "from", required = false, defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", required = false, defaultValue = "10") @Positive Integer size) {
+        BookingState.from(state).orElseThrow(() -> new ValidationException("Unknown state: " + state));
         log.info("GATEWAY: Запрос на получение списка бронирований пользователя с ID = {}.", userId);
         return client.getUserBookings(userId, state, from, size);
     }
@@ -45,6 +48,7 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL", required = false) String state,
             @RequestParam(value = "from", required = false, defaultValue = "0") @PositiveOrZero Integer from,
             @RequestParam(value = "size", required = false, defaultValue = "10") @Positive Integer size) {
+        BookingState.from(state).orElseThrow(() -> new ValidationException("Unknown state: " + state));
         log.info("GATEWAY: Запрос на получение информации о бронированиях пользователя с ID = {}.", userId);
         return client.getOwnerBookings(userId, state, from, size);
     }
